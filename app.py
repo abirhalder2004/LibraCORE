@@ -11,7 +11,7 @@ app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USERNAME"] = "abir221001020057@technoindiaeducation.com"
-app.config["MAIL_PASSWORD"] = "tuhw zdmv ocyr cjwm"
+app.config["MAIL_PASSWORD"] = "**** **** **** ****"
 app.config["MAIL_DEFAULT_SENDER"] = "LibraCore <abir221001020057@technoindiaeducation.com>"
 mail = Mail(app)
 
