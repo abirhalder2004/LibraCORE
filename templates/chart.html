@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}Application Flow Chart{% endblock %}
+{% block content %}
+
+<section class="bg-slate-900 p-8 rounded-2xl shadow-xl animate-fadeUp">
+  <h2 class="text-2xl font-semibold text-cyan-400 mb-10 text-center">
+    Library Management System – Complete Application Flow
+  </h2>
+
+  <div class="flow">
+
+    <!-- START -->
+    <div class="box start">Start</div>
+    <div class="arrow"></div>
+
+    <!-- LOGIN -->
+    <div class="box">Login Screen</div>
+    <div class="arrow"></div>
+
+    <!-- CATEGORY -->
+    <div class="box">Category of Books</div>
+    <div class="arrow"></div>
+
+    <!-- SPLIT -->
+    <div class="row">
+      <div class="box">Admin Access</div>
+      <div class="box">User Access</div>
+    </div>
+
+    <div class="row arrows">
+      <div class="arrow"></div>
+      <div class="arrow"></div>
+    </div>
+
+    <!-- ADMIN + USER MENUS -->
+    <div class="row">
+      <div class="box">
+        Maintenance Menu<br>
+        <small>(Admin only)</small>
+      </div>
+
+      <div class="box">
+        Transactions<br>
+        <small>(Admin & User)</small>
+      </div>
+    </div>
+
+    <!-- ADMIN FLOW -->
+    <div class="row arrows">
+      <div class="arrow"></div>
+      <div class="arrow"></div>
+    </div>
+
+    <div class="row">
+      <div class="box">
+        Add / Update Membership<br>
+        Add / Update Books<br>
+        User Management
+      </div>
+
+      <div class="box">
+        Check Availability<br>
+        Issue Book<br>
+        Return Book
+      </div>
+    </div>
+
+    <!-- ADMIN DETAILS -->
+    <div class="row arrows">
+      <div class="arrow"></div>
+      <div class="arrow"></div>
+    </div>
+
+    <div class="row">
+      <div class="box">
+        Add Membership<br>
+        Update Membership
+      </div>
+
+      <div class="box">Fine Payment</div>
+    </div>
+
+    <!-- MASTER LISTS -->
+    <div class="arrow"></div>
+    <div class="box">Master List of Memberships</div>
+
+    <div class="arrow"></div>
+    <div class="box">Master List of Books</div>
+
+    <div class="arrow"></div>
+    <div class="box">Master List of Movies</div>
+
+    <div class="arrow"></div>
+    <div class="box">Overdue Returns</div>
+
+    <div class="arrow"></div>
+    <div class="box">Pending Issue Requests</div>
+
+    <div class="arrow"></div>
+
+    <!-- REPORTS -->
+    <div class="box">Reports</div>
+
+  </div>
+</section>
+
+<style>
+.flow{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+}
+
+.box{
+  background:#0f172a;
+  border:1px solid #38bdf8;
+  color:#e5e7eb;
+  padding:14px 20px;
+  border-radius:14px;
+  min-width:260px;
+  text-align:center;
+  box-shadow:0 12px 30px rgba(56,189,248,.2);
+}
+
+.box small{
+  color:#94a3b8;
+  font-size:12px;
+}
+
+.start{
+  background:#22d3ee;
+  color:#020617;
+  font-weight:600;
+}
+
+.row{
+  display:flex;
+  gap:90px;
+}
+
+.arrow{
+  width:2px;
+  height:30px;
+  background:#38bdf8;
+  position:relative;
+}
+
+.arrow::after{
+  content:"";
+  position:absolute;
+  bottom:-6px;
+  left:-5px;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-top:6px solid #38bdf8;
+}
+
+.row.arrows{
+  justify-content:space-around;
+  width:100%;
+}
+</style>
+
+{% endblock %}

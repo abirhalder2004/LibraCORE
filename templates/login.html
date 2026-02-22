@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% set hide_navbar = True %}
+{% block title %}Login - LibraCore{% endblock %}
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center relative z-20">
+
+  <!-- BACKGROUND GLOW -->
+  <div class="absolute w-[420px] h-[420px] rounded-full
+              bg-gradient-to-br from-cyan-400 via-indigo-500 to-pink-500
+              blur-[140px] opacity-40 animate-pulseSlow">
+  </div>
+
+  <!-- MAIN CARD -->
+  <div class="relative z-20 flex w-full max-w-4xl rounded-3xl overflow-hidden
+              shadow-2xl bg-slate-900/95 backdrop-blur-md border border-slate-800">
+
+    <!-- LEFT: BRAND -->
+    <div class="w-1/2 hidden md:flex items-center justify-center relative">
+
+      <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-pink-500/20 blur-2xl"></div>
+
+      <h1 class="relative text-6xl font-extrabold select-none">
+        <span class="text-cyan-400">
+          <span class="letter">L</span>
+          <span class="letter delay-1">i</span>
+          <span class="letter delay-2">b</span>
+          <span class="letter delay-3">r</span>
+          <span class="letter delay-4">a</span>
+        </span>
+        <span class="text-pink-400">
+          <span class="letter delay-5">C</span>
+          <span class="letter delay-6">o</span>
+          <span class="letter delay-7">r</span>
+          <span class="letter delay-8">e</span>
+        </span>
+      </h1>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="hidden md:block w-[1px] bg-gradient-to-b from-transparent via-slate-600 to-transparent"></div>
+
+    <!-- RIGHT: FORM -->
+    <div class="w-full md:w-1/2 p-10 flex flex-col justify-center">
+
+      <h2 class="text-2xl font-semibold text-white mb-8">
+        Login to <span class="text-cyan-400">Libra</span><span class="text-pink-400">Core</span>
+      </h2>
+
+      <form method="POST" class="space-y-5">
+
+        <input type="text" name="username" placeholder="Username" required
+               class="w-full p-3 rounded-xl bg-slate-800 border border-slate-700
+                      text-slate-200 focus:ring-2 focus:ring-cyan-400 outline-none">
+
+        <input type="password" name="password" placeholder="Password" required
+               class="w-full p-3 rounded-xl bg-slate-800 border border-slate-700
+                      text-slate-200 focus:ring-2 focus:ring-cyan-400 outline-none">
+
+        <div class="flex gap-6 text-slate-300 text-sm">
+          <label class="flex items-center gap-2">
+            <input type="radio" name="role" value="admin" checked> Admin
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="radio" name="role" value="user"> User
+          </label>
+        </div>
+
+        <button
+          class="w-full py-3 rounded-xl font-semibold text-white
+                 bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-400
+                 shadow-lg shadow-cyan-400/40
+                 hover:shadow-pink-400/60 hover:scale-[1.03]
+                 transition-all duration-300 animate-glowBtn">
+          Login
+        </button>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ANIMATIONS ================= -->
+<style>
+@keyframes letterIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.letter {
+  display: inline-block;
+  opacity: 0;
+  animation: letterIn .6s ease forwards;
+}
+.delay-1 { animation-delay: .1s }
+.delay-2 { animation-delay: .2s }
+.delay-3 { animation-delay: .3s }
+.delay-4 { animation-delay: .4s }
+.delay-5 { animation-delay: .5s }
+.delay-6 { animation-delay: .6s }
+.delay-7 { animation-delay: .7s }
+.delay-8 { animation-delay: .8s }
+
+@keyframes pulseSlow {
+  0%,100% { opacity:.35 }
+  50% { opacity:.55 }
+}
+.animate-pulseSlow { animation: pulseSlow 6s ease-in-out infinite }
+
+@keyframes glowBtn {
+  0%,100% { box-shadow:0 0 20px rgba(34,211,238,.4) }
+  50% { box-shadow:0 0 36px rgba(236,72,153,.6) }
+}
+.animate-glowBtn { animation: glowBtn 3s ease-in-out infinite }
+</style>
+
+{% endblock %}

@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% block title %}Transactions - LMS{% endblock %}
+{% block content %}
+
+<section class="bg-slate-900 p-8 rounded-2xl shadow-xl animate-fadeUp">
+  <h2 class="text-2xl font-semibold text-cyan-400 mb-6">Transactions</h2>
+
+  <!-- SEARCH BOOK -->
+  <h3 class="text-lg font-semibold mb-2">Book Available</h3>
+  <form action="{{ url_for('search_books') }}" method="POST"
+        class="grid md:grid-cols-3 gap-4 mb-6">
+    <input type="text" name="bs_name" placeholder="Book Name" class="input">
+
+    <select name="bs_category" class="input">
+      <option value="">-- Category --</option>
+      <option>Fiction</option>
+      <option>Non-fiction</option>
+      <option>Technology</option>
+      <option>Fantasy</option>
+      <option>Thriller</option>
+      <option>Horror</option>
+      <option>Kids</option>
+      <option>Science</option>
+      <option>Action</option>
+      <option>Drama</option>
+      <option>Sci-Fi</option>
+    </select>
+
+    <button class="btn-primary">Search</button>
+  </form>
+
+  <!-- ================= SEARCH RESULTS (FIX) ================= -->
+  {% if search_results %}
+  <h3 class="text-lg font-semibold mb-2">Search Results</h3>
+
+  <div class="overflow-x-auto mb-8">
+    <table class="w-full border border-slate-700 rounded-xl">
+      <thead class="bg-slate-800">
+        <tr>
+          <th class="p-3">Serial</th>
+          <th class="p-3">Title</th>
+          <th class="p-3">Author</th>
+          <th class="p-3">Category</th>
+          <th class="p-3">Available</th>
+          <th class="p-3">Select</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in search_results %}
+        <tr class="border-t border-slate-700 hover:bg-slate-800">
+          <td class="p-3">{{ b.serial_no }}</td>
+          <td class="p-3">{{ b.title }}</td>
+          <td class="p-3">{{ b.author }}</td>
+          <td class="p-3">{{ b.category }}</td>
+          <td class="p-3">{{ 'Y' if b.available else 'N' }}</td>
+          <td class="p-3">
+            {% if b.available %}
+            <input type="radio"
+                   onclick="fillIssueForm('{{ b.title }}','{{ b.author }}')">
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+  <!-- ================= END SEARCH RESULTS ================= -->
+
+  <!-- ISSUE BOOK -->
+  <h3 class="text-lg font-semibold mb-2">Issue Book</h3>
+  <form action="{{ url_for('issue_book') }}" method="POST"
+        class="grid md:grid-cols-2 gap-4 mb-8">
+    <input id="ib_name" name="ib_name" placeholder="Book Name" required class="input">
+    <input id="ib_author" name="ib_author" placeholder="Author" readonly class="input">
+
+    <label class="text-slate-400">Issue Date</label>
+    <input type="date" name="ib_issue_date"
+           value="{{ today }}" required class="input">
+
+    <label class="text-slate-400">Return Date</label>
+    <input type="date" name="ib_return_date"
+           value="{{ default_return_date }}" required class="input">
+
+    <textarea name="ib_remarks" placeholder="Remarks"
+              class="input md:col-span-2"></textarea>
+
+    <button class="btn-primary md:col-span-2">Confirm Issue</button>
+  </form>
+
+  <!-- RETURN BOOK -->
+  <h3 class="text-lg font-semibold mb-2">Return Book</h3>
+  <form action="{{ url_for('return_book') }}" method="POST"
+        class="grid md:grid-cols-2 gap-4 mb-8">
+    <input name="rb_name" placeholder="Book Name" required class="input">
+    <input name="rb_serial" placeholder="Serial No" required class="input">
+
+    <label class="text-slate-400">Issue Date</label>
+    <input type="date" name="rb_issue_date" required class="input">
+
+    <label class="text-slate-400">Return Date</label>
+    <input type="date" name="rb_return_date" required class="input">
+
+    <button class="btn-primary md:col-span-2">Confirm Return</button>
+  </form>
+
+<!-- PAY FINE -->
+{% if fine_info %}
+<h3 class="text-lg font-semibold mb-2">Pay Fine</h3>
+
+<form action="{{ url_for('pay_fine') }}" method="POST"
+      class="grid md:grid-cols-2 gap-4 mb-10">
+
+  <input value="{{ fine_info.book_title }}" readonly class="input">
+  <input value="₹ {{ fine_info.fine }}" readonly class="input">
+
+  <label class="flex items-center gap-2 md:col-span-2">
+    <input type="checkbox" name="fp_paid" required>
+    Fine Paid
+  </label>
+
+  <textarea name="fp_remarks" placeholder="Remarks (optional)"
+            class="input md:col-span-2"></textarea>
+
+  <button class="btn-primary md:col-span-2">Confirm Return</button>
+</form>
+{% endif %}
+
+
+  <!-- UNAVAILABLE BOOKS -->
+  <!-- UNAVAILABLE / BORROWED BOOKS -->
+  <h3 class="text-lg font-semibold text-red-400 mt-6 mb-4">
+    {% if role == 'admin' %}
+        All Issued / Unavailable Books
+    {% else %}
+        Your Borrowed Books (Return Reference)
+    {% endif %}
+  </h3>
+  
+  {% if borrowed_books and borrowed_books|length > 0 %}
+  <div class="overflow-x-auto mb-10">
+    <table class="w-full border border-slate-700 rounded-xl">
+        <thead class="bg-slate-800">
+            <tr>
+                <th class="p-3">Serial</th>
+                <th class="p-3">Title</th>
+                <th class="p-3">Author</th>
+                <th class="p-3">Category</th>
+                <th class="p-3">Issue Date</th>
+                <th class="p-3">Return By</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in borrowed_books %}
+            <tr class="border-t border-slate-700 hover:bg-slate-800">
+                <td class="p-3">{{ b.serial_no }}</td>
+                <td class="p-3">{{ b.title }}</td>
+                <td class="p-3">{{ b.author }}</td>
+                <td class="p-3">{{ b.category }}</td>
+                <td class="p-3">{{ b.issue_date }}</td>
+                <td class="p-3">{{ b.planned_return_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-slate-400 mb-10">
+    {% if role == 'admin' %}
+        No issued books currently.
+    {% else %}
+        You have not borrowed any books.
+    {% endif %}
+  </p>
+  {% endif %}  
+
+  <button id="backToTop" class="back-to-top">
+    ↑ Top
+  </button>  
+
+</section>
+
+<script>
+function fillIssueForm(title, author) {
+  document.getElementById("ib_name").value = title;
+  document.getElementById("ib_author").value = author;
+}
+</script>
+
+<style>
+.input{
+  padding:12px;
+  background:#020617;
+  border:1px solid #334155;
+  border-radius:10px;
+  color:#e5e7eb;
+}
+.btn-primary{
+  background:#22d3ee;
+  color:#020617;
+  padding:12px;
+  border-radius:14px;
+  font-weight:600;
+}
+.btn-primary:hover{ background:#06b6d4; }
+input[type="date"]::-webkit-calendar-picker-indicator{
+  filter:invert(1);
+}
+/* ===== BACK TO TOP BUTTON ===== */
+.back-to-top{
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: #22d3ee;
+  color: #020617;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(34,211,238,.4);
+  display: none;
+  z-index: 999;
+  transition: all .3s ease;
+}
+
+.back-to-top:hover{
+  background:#06b6d4;
+  transform: translateY(-2px);
+}
+</style>
+
+<script>
+  const backToTopBtn = document.getElementById("backToTop");
+  
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 300) {
+      backToTopBtn.style.display = "block";
+    } else {
+      backToTopBtn.style.display = "none";
+    }
+  });
+  
+  backToTopBtn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+  </script>
+  
+{% endblock %}
