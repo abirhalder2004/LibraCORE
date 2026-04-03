@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}LibraCore{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ========== NAVBAR ANIMATIONS ========== */
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glow {
+      0%,100% { text-shadow: 0 0 0 rgba(34,211,238,0); }
+      50% { text-shadow: 0 0 14px rgba(34,211,238,.6); }
+    }
+
+    /* ========== FLOATING BUBBLE BACKGROUND ========== */
+    .bubble-bg{
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .bubble{
+      position: absolute;
+      bottom: -120px;
+      border-radius: 50%;
+      opacity: .6;
+      background: radial-gradient(
+        circle at 30% 30%,
+        rgba(255,255,255,.8),
+        rgba(56,189,248,.35),
+        rgba(56,189,248,.15)
+      );
+      animation: bubbleFloat linear infinite;
+    }
+
+    .bubble.small { width: 14px; height: 14px; animation-duration: 18s; }
+    .bubble.medium{ width: 26px; height: 26px; animation-duration: 26s; }
+    .bubble.large { width: 40px; height: 40px; animation-duration: 34s; }
+
+    @keyframes bubbleFloat{
+      0%{ transform: translateY(0); opacity: 0; }
+      15%{ opacity: .6; }
+      100%{ transform: translateY(-130vh); opacity: 0; }
+    }
+
+    /* ===== FINAL BUBBLE SPLIT EFFECT ===== */
+    .sub-bubble{
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: .6;
+  z-index: 4;
+
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,.8),
+    rgba(56,189,248,.35),
+    rgba(56,189,248,.15)
+  );
+
+  animation: subBubbleTravel 9s linear forwards;
+}
+
+@keyframes subBubbleTravel{
+  /* Stay + roam sideways */
+  0%{
+    transform: translate(0,0);
+    opacity: .6;
+  }
+
+  /* BIG SIDE ROAM (NO UPWARD YET) */
+  55%{
+    transform: translate(var(--sx), var(--sy));
+    opacity: .55;
+  }
+
+  /* NOW follow main bubble path */
+  100%{
+    transform: translate(calc(var(--sx) * .15), -130vh);
+    opacity: 0;
+  }
+}
+
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-200 relative">
+
+<!-- ========== BACKGROUND ANIMATION ========== -->
+<div class="bubble-bg">
+  <div class="bubble small" style="left:8%;animation-delay:0s"></div>
+  <div class="bubble medium" style="left:20%;animation-delay:4s"></div>
+  <div class="bubble small" style="left:32%;animation-delay:8s"></div>
+  <div class="bubble large" style="left:45%;animation-delay:2s"></div>
+  <div class="bubble medium" style="left:58%;animation-delay:11s"></div>
+  <div class="bubble small" style="left:70%;animation-delay:6s"></div>
+  <div class="bubble large" style="left:82%;animation-delay:14s"></div>
+</div>
+
+<!-- ========== NAVBAR (HIDDEN ON LOGIN) ========== -->
+{% if not hide_navbar %}
+<header class="fixed top-0 left-0 right-0 z-30 flex justify-center pointer-events-auto">
+  <div
+    class="w-full max-w-6xl
+           mx-6 mt-3 px-10 py-3
+           flex justify-between items-center
+           rounded-xl
+           border border-slate-800
+           bg-slate-900/80 backdrop-blur-md
+           shadow-lg
+           animate-[slideDown_.6s_ease]">
+
+    <h1 class="text-2xl font-extrabold tracking-wide select-none">
+      <span class="text-cyan-400 animate-[glow_3s_ease-in-out_infinite]">Libra</span><span class="text-pink-400">Core</span>
+    </h1>
+
+    <div class="flex items-center gap-6 text-sm font-semibold">
+      {% if session.username %}
+        <span class="hidden sm:inline text-slate-400">
+          Welcome, <b class="text-slate-200">{{ session.username }}</b>
+        </span>
+
+        <a href="{{ url_for('home') }}" class="text-cyan-400 hover:text-cyan-300">Home</a>
+        <a href="{{ url_for('chart') }}" class="text-yellow-400 hover:text-yellow-300">Chart</a>
+        <a href="{{ url_for('logout') }}"
+           class="px-3 py-1.5 rounded-lg bg-pink-400 text-slate-900 hover:bg-pink-300">
+          Logout
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+<div class="h-24"></div>
+{% endif %}
+
+<!-- ========== FLASH MESSAGES ========== -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="fixed top-24 right-6 z-50 space-y-3">
+      {% for category, message in messages %}
+        <div class="
+          px-5 py-3 rounded-xl shadow-lg text-sm font-semibold
+          animate-[slideDown_.4s_ease]
+          {% if category == 'success' %} bg-emerald-400 text-black
+          {% elif category == 'error' %} bg-red-500 text-white
+          {% elif category == 'info' %} bg-cyan-400 text-black
+          {% else %} bg-slate-700 text-white {% endif %}
+        ">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="relative z-20 max-w-6xl mx-auto p-6">
+  {% block content %}{% endblock %}
+</div>
+
+<script>
+const bubbles = document.querySelectorAll(".bubble");
+
+document.addEventListener("mousemove", (e) => {
+  bubbles.forEach(bubble => {
+    if (bubble.dataset.burst === "true") return;
+
+    const rect = bubble.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+
+    if (dist < rect.width * 0.9) {
+      burstBubble(bubble, rect);
+    }
+  });
+});
+
+function burstBubble(bubble, rect){
+  bubble.dataset.burst = "true";
+  bubble.style.opacity = "0";
+
+  const size = rect.width;
+  const pieces = 4 + Math.floor(Math.random() * 2);
+  const subSize = size / 2.15;
+
+  for(let i=0;i<pieces;i++){
+    const sub = document.createElement("div");
+    sub.className = "sub-bubble";
+
+    sub.style.width = sub.style.height = subSize + "px";
+    sub.style.left = rect.left + size/2 - subSize/2 + "px";
+    sub.style.top  = rect.top  + size/2 - subSize/2 + "px";
+
+    const angle = Math.random() * Math.PI * 2;
+    const spread = size * (2.4 + Math.random() * 1.8);
+
+    const sx = Math.cos(angle) * spread;
+    const sy = (Math.random() - 0.5) * spread * 0.6;
+
+    sub.style.setProperty("--sx", `${sx}px`);
+    sub.style.setProperty("--sy", `${sy}px`);
+
+    document.body.appendChild(sub);
+    setTimeout(() => sub.remove(), 7600);
+  }
+
+  setTimeout(() => {
+    bubble.dataset.burst = "";
+    bubble.style.opacity = ".6";
+  }, 7800);
+}
+</script>
+
+</body>
+</html>

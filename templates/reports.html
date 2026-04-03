@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}Reports - LMS{% endblock %}
+{% block content %}
+
+<section class="panel bg-slate-900 p-6 rounded-xl shadow-lg fade-in">
+
+    <h2 class="text-2xl font-semibold text-cyan-300 mb-6">Reports</h2>
+
+    <!-- Master List: Books / Movies -->
+    <h3 class="text-xl font-semibold text-yellow-300 mb-3">
+        Master List - Books / Movies
+    </h3>
+
+    <div class="overflow-x-auto">
+        <table class="w-full border border-slate-700 text-sm">
+            <thead class="bg-slate-800 text-cyan-300">
+            <tr>
+                <th class="p-2 border">ID</th>
+                <th class="p-2 border">Type</th>
+                <th class="p-2 border">Serial No</th>
+                <th class="p-2 border">Title</th>
+                <th class="p-2 border">Author/Director</th>
+                <th class="p-2 border">Category</th>
+                <th class="p-2 border">Available</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for b in books %}
+            <tr class="hover:bg-slate-800 transition">
+                <td class="p-2 border">{{ b.id }}</td>
+                <td class="p-2 border">{{ b.type }}</td>
+                <td class="p-2 border">{{ b.serial_no }}</td>
+                <td class="p-2 border">{{ b.title }}</td>
+                <td class="p-2 border">{{ b.author }}</td>
+                <td class="p-2 border">{{ b.category }}</td>
+                <td class="p-2 border">{{ 'Y' if b.available else 'N' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Issues -->
+    <h3 class="text-xl font-semibold text-yellow-300 mt-8 mb-3">
+        Recent Issues / Returns
+    </h3>
+
+    <div class="overflow-x-auto">
+        <table class="w-full border border-slate-700 text-sm">
+            <thead class="bg-slate-800 text-cyan-300">
+            <tr>
+                <th class="p-2 border">Issue ID</th>
+                <th class="p-2 border">Book Title</th>
+                <th class="p-2 border">Member</th>
+                <th class="p-2 border">Issue Date</th>
+                <th class="p-2 border">Planned Return</th>
+                <th class="p-2 border">Actual Return</th>
+                <th class="p-2 border">Fine</th>
+                <th class="p-2 border">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in issues %}
+            <tr class="hover:bg-slate-800 transition">
+                <td class="p-2 border">{{ i.id }}</td>
+                <td class="p-2 border">{{ i.title }}</td>
+                <td class="p-2 border">{{ i.member_name }}</td>
+                <td class="p-2 border">{{ i.issue_date }}</td>
+                <td class="p-2 border">{{ i.planned_return_date }}</td>
+                <td class="p-2 border">{{ i.actual_return_date or '' }}</td>
+                <td class="p-2 border">{{ i.fine_amount }}</td>
+                <td class="p-2 border">{{ i.status }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Memberships -->
+    <h3 class="text-xl font-semibold text-yellow-300 mt-8 mb-3">
+        Master List - Memberships
+    </h3>
+
+    <div class="overflow-x-auto">
+        <table class="w-full border border-slate-700 text-sm">
+            <thead class="bg-slate-800 text-cyan-300">
+            <tr>
+                <th class="p-2 border">ID</th>
+                <th class="p-2 border">Name</th>
+                <th class="p-2 border">Email</th>
+                <th class="p-2 border">Phone</th>
+                <th class="p-2 border">Start</th>
+                <th class="p-2 border">End</th>
+                <th class="p-2 border">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for m in members %}
+            <tr class="hover:bg-slate-800 transition">
+                <td class="p-2 border">{{ m.id }}</td>
+                <td class="p-2 border">{{ m.name }}</td>
+                <td class="p-2 border">{{ m.email }}</td>
+                <td class="p-2 border">{{ m.phone }}</td>
+                <td class="p-2 border">{{ m.membership_start }}</td>
+                <td class="p-2 border">{{ m.membership_end }}</td>
+                <td class="p-2 border">{{ m.status }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <button id="backToTop" class="back-to-top">
+        ↑ Top
+      </button>
+      
+</section>
+
+<style>
+/* ===== BACK TO TOP BUTTON ===== */
+.back-to-top{
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: #22d3ee;
+  color: #020617;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(34,211,238,.4);
+  display: none;
+  z-index: 999;
+  transition: all .3s ease;
+}
+
+.back-to-top:hover{
+  background:#06b6d4;
+  transform: translateY(-2px);
+}
+</style>
+
+<script>
+    const backToTopBtn = document.getElementById("backToTop");
+    
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.style.display = "block";
+      } else {
+        backToTopBtn.style.display = "none";
+      }
+    });
+    
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+    </script>
+    
+
+{% endblock %}

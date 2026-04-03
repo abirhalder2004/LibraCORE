@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+{% block title %}Maintenance - LMS{% endblock %}
+{% block content %}
+
+<section class="bg-slate-900 p-8 rounded-2xl shadow-xl animate-fadeUp">
+
+  <h2 class="text-2xl font-semibold text-cyan-400 mb-6">Maintenance (Admin)</h2>
+
+  <!-- ================= MEMBERSHIP ================= -->
+  <h3 class="text-lg font-semibold mb-4">Membership</h3>
+
+  <!-- ADD MEMBERSHIP -->
+  <h4 class="font-semibold mb-2">Add Membership</h4>
+  <form action="{{ url_for('add_membership') }}" method="POST" class="grid gap-4 mb-10">
+
+    <input name="m_name" placeholder="Name" required class="input">
+    <input name="m_email" type="email" placeholder="Email" required class="input">
+    <input name="m_phone" placeholder="Phone" required class="input">
+
+    <p class="text-slate-400">Duration</p>
+    <div class="flex gap-6">
+      <label><input type="radio" name="m_duration" value="6" checked> 6 months</label>
+      <label><input type="radio" name="m_duration" value="12"> 1 year</label>
+      <label><input type="radio" name="m_duration" value="24"> 2 years</label>
+    </div>
+
+    <p class="text-slate-400 mt-4">Create Login</p>
+
+    <input name="m_username" placeholder="Username" class="input">
+    <input name="m_password" type="password" placeholder="Password" class="input">
+    <input name="m_password_confirm" type="password" placeholder="Confirm Password" class="input">
+
+    <p class="text-slate-400">Role</p>
+    <div class="flex gap-6">
+      <label><input type="radio" name="m_role" value="user" checked> User</label>
+      <label><input type="radio" name="m_role" value="admin"> Admin</label>
+    </div>
+
+    <button class="btn-primary">Add Membership</button>
+  </form>
+
+  <!-- UPDATE MEMBERSHIP -->
+  <h4 class="font-semibold mb-2">Update Membership</h4>
+  <form action="{{ url_for('update_membership') }}" method="POST" class="grid gap-4 mb-10">
+
+    <input name="um_id" placeholder="Membership ID" required class="input">
+
+    <p class="text-slate-400">Action</p>
+    <div class="flex gap-6">
+      <label><input type="radio" name="um_action" value="extend" checked> Extend</label>
+      <label><input type="radio" name="um_action" value="cancel"> Cancel</label>
+      <label class="text-red-400 font-semibold"><input type="radio" name="um_action" value="delete"> Delete</label>
+    </div>
+
+    <p class="text-slate-400">Extension Duration</p>
+    <div class="flex gap-6">
+      <label><input type="radio" name="um_duration" value="6" checked> +6 months</label>
+      <label><input type="radio" name="um_duration" value="12"> +1 year</label>
+      <label><input type="radio" name="um_duration" value="24"> +2 years</label>
+    </div>
+
+    <button class="btn-primary">Update Membership</button>
+  </form>
+
+  <!-- ================= USER MANAGEMENT ================= -->
+  <h3 class="text-lg font-semibold mb-4">User Management</h3>
+
+  <form action="{{ url_for('user_update') }}" method="POST" class="grid gap-4 mb-10">
+    <input name="um_id" placeholder="Membership ID" required class="input">
+    <input name="eu_username" placeholder="New Username" required class="input">
+    <input name="eu_password" type="password" placeholder="New Password (optional)" class="input">
+
+    <p class="text-slate-400">New Role</p>
+    <div class="flex gap-6">
+      <label><input type="radio" name="eu_role" value="user" checked> User</label>
+      <label><input type="radio" name="eu_role" value="admin"> Admin</label>
+    </div>
+
+    <button class="btn-primary">Update User</button>
+  </form>
+
+  <!-- ================= BOOKS / MOVIES ================= -->
+  <h3 class="text-lg font-semibold mb-4">Books / Movies</h3>
+
+  <!-- ADD BOOK -->
+  <h4 class="font-semibold mb-2">Add Book / Movie</h4>
+  <form action="{{ url_for('add_book') }}" method="POST" class="grid gap-4 mb-10">
+
+    <p class="text-slate-400">Type</p>
+    <div class="flex gap-6">
+      <label><input type="radio" name="ab_type" value="book" checked> Book</label>
+      <label><input type="radio" name="ab_type" value="movie"> Movie</label>
+    </div>
+
+    <input name="ab_title" placeholder="Title" required class="input">
+    <input name="ab_author" placeholder="Author / Director" required class="input">
+    <input name="ab_serial" placeholder="Serial No" required class="input">
+    <input name="ab_category" placeholder="Category" required class="input">
+
+    <button class="btn-primary">Add</button>
+  </form>
+
+  <!-- UPDATE BOOK -->
+  <h4 class="font-semibold mb-2">Update Book / Movie</h4>
+  <form action="{{ url_for('update_book') }}" method="POST" class="grid gap-4 mb-10">
+
+    <input name="ub_serial" placeholder="Serial No" required class="input">
+
+    <p class="text-slate-400">Type</p>
+    <div class="flex gap-6">
+      <label><input type="radio" name="ub_type" value="book" checked> Book</label>
+      <label><input type="radio" name="ub_type" value="movie"> Movie</label>
+    </div>
+
+    <input name="ub_title" placeholder="New Title" class="input">
+    <input name="ub_author" placeholder="New Author / Director" class="input">
+    <input name="ub_category" placeholder="New Category" class="input">
+
+    <label class="flex items-center gap-2">
+      <input type="checkbox" name="ub_available" checked> Available
+    </label>
+
+    <button class="btn-primary">Update</button>
+  </form>
+
+  <!-- ================= MASTER LISTS ================= -->
+  <h3 class="text-lg font-semibold mb-4">Master Lists</h3>
+
+  <!-- MEMBERS -->
+  <h4 class="font-semibold mb-2">Members</h4>
+  <div class="overflow-x-auto mb-8">
+    <table class="w-full border border-slate-700 rounded-xl">
+      <thead class="bg-slate-800">
+        <tr>
+          <th class="p-3">ID</th><th class="p-3">Name</th><th class="p-3">Email</th>
+          <th class="p-3">Phone</th><th class="p-3">Start</th>
+          <th class="p-3">End</th><th class="p-3">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in members %}
+        <tr class="border-t border-slate-700">
+          <td class="p-3">{{ m.id }}</td>
+          <td class="p-3">{{ m.name }}</td>
+          <td class="p-3">{{ m.email }}</td>
+          <td class="p-3">{{ m.phone }}</td>
+          <td class="p-3">{{ m.membership_start }}</td>
+          <td class="p-3">{{ m.membership_end }}</td>
+          <td class="p-3">{{ m.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ================= USERS MASTER LIST ================= -->
+<h4 class="font-semibold mb-2">Users</h4>
+<div class="overflow-x-auto mb-10">
+  <table class="w-full border border-slate-700 rounded-xl">
+    <thead class="bg-slate-800">
+      <tr>
+        <th class="p-3">ID</th>
+        <th class="p-3">Username</th>
+        <th class="p-3">Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr class="border-t border-slate-700 hover:bg-slate-800">
+        <td class="p-3">{{ u.id }}</td>
+        <td class="p-3">{{ u.username }}</td>
+        <td class="p-3">{{ u.role }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ================= BOOKS / MOVIES MASTER LIST ================= -->
+<h4 class="font-semibold mb-2">Books / Movies</h4>
+<div class="overflow-x-auto mb-8">
+  <table class="w-full border border-slate-700 rounded-xl">
+    <thead class="bg-slate-800">
+      <tr>
+        <th class="p-3">ID</th>
+        <th class="p-3">Type</th>
+        <th class="p-3">Title</th>
+        <th class="p-3">Author</th>
+        <th class="p-3">Serial</th>
+        <th class="p-3">Category</th>
+        <th class="p-3">Available</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in books %}
+      <tr class="border-t border-slate-700 hover:bg-slate-800">
+        <td class="p-3">{{ b.id }}</td>
+        <td class="p-3">{{ b.type }}</td>
+        <td class="p-3">{{ b.title }}</td>
+        <td class="p-3">{{ b.author }}</td>
+        <td class="p-3">{{ b.serial_no }}</td>
+        <td class="p-3">{{ b.category }}</td>
+        <td class="p-3">{{ 'Y' if b.available else 'N' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<button id="backToTop" class="back-to-top">
+    ↑ Top
+</button>
+  
+</section>
+
+<style>
+.input{
+  padding:12px;
+  background:#020617;
+  border:1px solid #334155;
+  border-radius:10px;
+  color:#e5e7eb;
+}
+.btn-primary{
+  background:#22d3ee;
+  color:#020617;
+  padding:12px;
+  border-radius:14px;
+  font-weight:600;
+}
+.btn-primary:hover{ background:#06b6d4; }
+/* ===== BACK TO TOP BUTTON ===== */
+.back-to-top{
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: #22d3ee;
+  color: #020617;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(34,211,238,.4);
+  display: none;
+  z-index: 999;
+  transition: all .3s ease;
+}
+
+.back-to-top:hover{
+  background:#06b6d4;
+  transform: translateY(-2px);
+}
+</style>
+
+<script>
+    const backToTopBtn = document.getElementById("backToTop");
+    
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.style.display = "block";
+      } else {
+        backToTopBtn.style.display = "none";
+      }
+    });
+    
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+    </script>
+
+{% endblock %}
